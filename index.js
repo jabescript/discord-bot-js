@@ -1,5 +1,6 @@
 const fs = require('node:fs');
 const path = require('node:path');
+const http = require('node:http');
 const { Client, Collection, Events, GatewayIntentBits, MessageFlags } = require('discord.js');
 
 const { token } = require('./config.js');
@@ -40,3 +41,6 @@ for (const file of eventFiles) {
 }
 
 client.login(token);
+
+const port = process.env.PORT || 3000;
+http.createServer((_, res) => res.end('OK')).listen(port);
