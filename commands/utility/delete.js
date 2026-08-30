@@ -1,5 +1,6 @@
-const { SlashCommandBuilder, REST, Routes } = require('discord.js');
+const { SlashCommandBuilder, REST, Routes, MessageFlags } = require('discord.js');
 const { clientId, guildId, token } = require('../../config.js');
+const { isPrivileged } = require('../../utils/is-privileged.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -9,6 +10,10 @@ module.exports = {
 			option.setName('command').setDescription('The command to delete.').setRequired(true),
 		),
 	async execute(interaction) {
+		if (!await isPrivileged(interaction)) {
+			return interaction.reply({ content: 'You do not have permission to use this command.', flags: MessageFlags.Ephemeral });
+		}
+
 		const commandName = interaction.options.getString('command', true).toLowerCase();
 
 		const rest = new REST().setToken(token);

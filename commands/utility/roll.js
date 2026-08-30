@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, MessageFlags } = require('discord.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -12,14 +12,14 @@ module.exports = {
 		const match = input.match(/^(\d+)d(\d+)$/);
 
 		if (!match) {
-			return interaction.reply({ content: 'Invalid format. Use dice notation like `2d6` or `1d20`.', ephemeral: true });
+			return interaction.reply({ content: 'Invalid format. Use dice notation like `2d6` or `1d20`.', flags: MessageFlags.Ephemeral });
 		}
 
 		const count = parseInt(match[1]);
 		const sides = parseInt(match[2]);
 
 		if (count < 1 || count > 100 || sides < 2 || sides > 1000) {
-			return interaction.reply({ content: 'Use between 1–100 dice with 2–1000 sides.', ephemeral: true });
+			return interaction.reply({ content: 'Use between 1–100 dice with 2–1000 sides.', flags: MessageFlags.Ephemeral });
 		}
 
 		const rolls = Array.from({ length: count }, () => Math.floor(Math.random() * sides) + 1);
