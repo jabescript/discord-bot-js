@@ -1,17 +1,22 @@
 {
   "name": "discord-bot-js",
   "version": "1.0.0",
+  "description": "A Discord bot built with discord.js v14.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "dev": "node --env-file=.env index.js",
-    "deploy": "node --env-file=.env deploy-commands.js"
+    "deploy": "node --env-file=.env deploy-commands.js",
+    "lint": "eslint ."
   },
   "author": "",
   "license": "ISC",
-  "description": "",
+  "engines": {
+    "node": ">=20.6.0"
+  },
   "dependencies": {
-    "discord.js": "^14.26.3"
+    "discord.js": "^14.26.3",
+    "he": "^1.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",

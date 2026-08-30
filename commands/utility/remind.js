@@ -23,8 +23,14 @@ module.exports = {
 		setTimeout(async () => {
 			try {
 				await interaction.user.send(`⏰ Reminder: **${message}**`);
-			} catch {
-				// DMs disabled — silently fail
+			}
+			catch {
+				try {
+					await interaction.channel?.send(`⏰ <@${interaction.user.id}> Reminder: **${message}**`);
+				}
+				catch {
+					// DMs and channel unavailable — give up silently
+				}
 			}
 		}, ms);
 	},
