@@ -1,4 +1,5 @@
-const { Collection, Events, MessageFlags } = require('discord.js');
+const { Events, MessageFlags } = require('discord.js');
+const { cooldownRemainingMs, ensureTimestamps, DEFAULT_COOLDOWN_SECONDS } = require('../utils/cooldown.js');
 
 module.exports = {
 	name: Events.InteractionCreate,
@@ -13,25 +14,17 @@ module.exports = {
 		}
 
 		const { cooldowns } = interaction.client;
-
-		if (!cooldowns.has(command.data.name)) {
-			cooldowns.set(command.data.name, new Collection());
-		}
-
+		const timestamps = ensureTimestamps(cooldowns, command.data.name);
 		const now = Date.now();
-		const timestamps = cooldowns.get(command.data.name);
-		const defaultCooldownDuration = 3;
-		const cooldownAmount = (command.cooldown ?? defaultCooldownDuration) * 1_000;
+		const cooldownAmount = (command.cooldown ?? DEFAULT_COOLDOWN_SECONDS) * 1_000;
+		const remaining = cooldownRemainingMs(timestamps, interaction.user.id, cooldownAmount, now);
 
-		if (timestamps.has(interaction.user.id)) {
-			const expirationTime = timestamps.get(interaction.user.id) + cooldownAmount;
-			if (now < expirationTime) {
-				const expiredTimestamp = Math.round(expirationTime / 1_000);
-				return interaction.reply({
-					content: `Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again <t:${expiredTimestamp}:R>.`,
-					flags: MessageFlags.Ephemeral,
-				});
-			}
+		if (remaining > 0) {
+			const expiredTimestamp = Math.round((now + remaining) / 1_000);
+			return interaction.reply({
+				content: `Please wait, you are on a cooldown for \`${command.data.name}\`. You can use it again <t:${expiredTimestamp}:R>.`,
+				flags: MessageFlags.Ephemeral,
+			});
 		}
 
 		timestamps.set(interaction.user.id, now);
