@@ -7,7 +7,8 @@
     "start": "node index.js",
     "dev": "node --env-file=.env index.js",
     "deploy": "node --env-file=.env deploy-commands.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "test": "node --test"
   },
   "author": "",
   "license": "ISC",
