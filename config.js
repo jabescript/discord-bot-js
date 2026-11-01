@@ -1,6 +1,7 @@
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.CLIENT_ID;
 const guildId = process.env.GUILD_ID;
+const deepseekApiKey = process.env.DEEPSEEK_API_KEY;
 
 if (!token) {
 	throw new Error('DISCORD_TOKEN is not set. Copy .env.example to .env and fill in your token.');
@@ -14,4 +15,8 @@ if (!guildId) {
 	console.warn('[WARNING] GUILD_ID is not set. Command deployment will not work.');
 }
 
-module.exports = { token, clientId, guildId };
+if (!deepseekApiKey) {
+	console.warn('[WARNING] DEEPSEEK_API_KEY is not set. The /chat command will not work.');
+}
+
+module.exports = { token, clientId, guildId, deepseekApiKey };

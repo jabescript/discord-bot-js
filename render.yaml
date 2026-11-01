@@ -11,3 +11,5 @@ services:
         sync: false
       - key: GUILD_ID
         sync: false
+      - key: DEEPSEEK_API_KEY
+        sync: false
