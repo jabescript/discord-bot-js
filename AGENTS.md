@@ -25,11 +25,11 @@ definitions changed, then a manual run via `npm run dev`. CI
   Also handles gateway errors, unhandled rejections, and `SIGTERM`/`SIGINT`
   shutdown.
 - `config.js`: the only module that reads env vars. Throws when `DISCORD_TOKEN`
-  is missing; warns when `CLIENT_ID`/`GUILD_ID` are missing.
+  is missing; warns when `CLIENT_ID`, `GUILD_ID`, or `DEEPSEEK_API_KEY` are missing.
 - `commands/<category>/<name>.js`: one slash command per file.
 - `events/<event>.js`: one gateway listener per file.
 - `utils/`: shared helpers (`load-commands.js`, `is-privileged.js`, `dice.js`,
-  `cooldown.js`, `reminders.js`).
+  `cooldown.js`, `reminders.js`, `deepseek.js`, `chat-history.js`).
 - `test/`: `node:test` suites, named `<module>.test.js`.
 - `deploy-commands.js`: pushes command definitions to Discord via REST.
 - `data/`: gitignored runtime state; `reminders.json` is rewritten on every
@@ -50,6 +50,10 @@ All live in `commands/utility/`.
 
 - `/8ball <question>`: random magic 8-ball answer.
 - `/avatar [user]`: full-size avatar embed (defaults to the caller).
+- `/chat ask <prompt> [private]`: replies with the `deepseek-flash` model;
+  history is per channel and user, capped at 10 turns with a 30 minute idle
+  expiry.
+- `/chat reset`: clears the caller's history for the current channel.
 - `/coinflip`: heads or tails.
 - `/delete <command>`: privileged; deregisters a guild command via REST.
 - `/ping`: replies `Pong!`; `cooldown: 5`.
@@ -99,13 +103,14 @@ Gate owner / `ManageGuild`-only commands with `isPrivileged(interaction)` from
 Every commit gets one attribution trailer, separated from the body by a blank
 line:
 
-    Co-Authored-By: DeepSeek V4.1 Flash 1017 <noreply@deepseek.com>
+    Co-Authored-By: OpenCode <noreply@opencode.ai>
 
-`noreply@deepseek.com` is not a real mailbox, so the trailer does not link to a
+`noreply@opencode.ai` is not a real mailbox, so the trailer does not link to a
 GitHub profile. Add the trailer once per commit, never twice.
 
 ## Deployment
 
 - `render.yaml` runs `node index.js`; `railpack.json` runs
   `node deploy-commands.js && node index.js`.
-- Never commit `.env`. Secrets live in `DISCORD_TOKEN`, `CLIENT_ID`, `GUILD_ID`.
+- Never commit `.env`. Secrets live in `DISCORD_TOKEN`, `CLIENT_ID`, `GUILD_ID`,
+  `DEEPSEEK_API_KEY`.
